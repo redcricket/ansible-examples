@@ -1,0 +1,12 @@
+---
+- name: Loop Example
+  hosts: localhost
+  tasks:
+    - name:
+      command: cat /vcs.txt
+      register: vcs
+    - name: Nonsense to demo loop
+      template:
+         src: /foo.j2
+         dest: /foo.{{ item.1 }}
+      with_indexed_items: "{{ vcs.stdout.split('\n')}}"
