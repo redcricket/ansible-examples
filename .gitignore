@@ -1,3 +1,8 @@
-
 launch_ec2_instance/new_user_credentials.csv
 launch_ec2_instance/vars.yaml
+launch_ec2_instance/aws_id_rsa
+launch_ec2_instance/aws_id_rsa.pub
+launch_ec2_instance/.ssh
+launch_ec2_instance/.viminfo
+launch_ec2_instance/*.retry
+
