@@ -18,12 +18,12 @@ RUN \
   apt-get install python -y && \
   apt-add-repository ppa:ansible/ansible && \
   apt-get install ansible -y && \
+  add-apt-repository universe && \
+  apt-get -y update && \
+  apt install -y python-pip && \
+  pip install boto3 && \
+  pip install boto && \
   rm -rf /var/lib/apt/lists/*
-
-# Add files.
-# ADD root/.bashrc /root/.bashrc
-# ADD root/.gitconfig /root/.gitconfig
-# ADD root/.scripts /root/.scripts
 
 # Set environment variables.
 ENV HOME /root
