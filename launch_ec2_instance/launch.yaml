@@ -14,7 +14,7 @@
         image: ami-0d1cd67c26f5fca19
         wait: yes
         region: us-west-2
-	# Begin:
+        # Begin:
         # These line make sure we do not keep launching
         # new instances everythime this play book is run.
         # A poor man's idempotency.
@@ -23,4 +23,4 @@
         exact_count: 1
         count_tag:
           Name: launch_by_ansible
-	# End 
+        # End 
