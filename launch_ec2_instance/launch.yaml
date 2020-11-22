@@ -16,7 +16,7 @@
         region: us-west-2
         # Begin:
         # These line make sure we do not keep launching
-        # new instances everythime this play book is run.
+        # new instances everythime this playbook is run.
         # A poor man's idempotency.
         instance_tags:
           Name: launch_by_ansible
