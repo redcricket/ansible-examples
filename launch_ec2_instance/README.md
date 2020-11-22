@@ -90,30 +90,21 @@ key to same region (us-west-2) as the instance.
 start docker container
 
 ```
-$ docker run -itd -e container=docker -v ${PWD}:/myfile ubuntu-ansible
-```
-
-Get the name of the container.
-
-```
-plankton@DESKTOP-C8MFTFD MINGW64 ~/GITHUB/ansible-examples/launch_ec2_instance (launch_ec2_instance)
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-7ec25d9bbec8        ubuntu-ansible      "bash"              44 seconds ago      Up 41 seconds                           boring_mcclintock
+$ docker run -itd --name ubuntu-ansible -e container=docker -v ${PWD}:/root ubuntu-ansible
 ```
 
 Logon to the running container by executing:
 
 ```
 plankton@DESKTOP-C8MFTFD MINGW64 ~/GITHUB/ansible-examples/launch_ec2_instance (launch_ec2_instance)
-$ docker exec -it boring_mcclintock bash
+$ docker exec -it ubuntu-ansible bash
 root@7ec25d9bbec8:~#
 ```
 
-Change directory to `/myfile`
+Change directory to `/root`
 
 ```
-root@7ec25d9bbec8:~# cd /myfile/
+root@7ec25d9bbec8:~# cd /root/
 ```
 
 
@@ -121,7 +112,7 @@ Run the playbook:
 
 ```
 
-root@7ec25d9bbec8:/myfile# ansible-playbook -i "localhost," launch.yaml --connection=local
+root@7ec25d9bbec8:/root# ansible-playbook -i "localhost," launch.yaml --connection=local
 
 ```
 
