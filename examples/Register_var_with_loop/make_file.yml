@@ -19,20 +19,8 @@
     register: letter_var
     loop: "{{ range(start, end) | list }}"
 
-  - name: with_together -> loop
-    ansible.builtin.debug:
-      msg: "{{ item.0.stdout }} - {{ item.1.stdout }}"
-    loop: "{{ word_var.results|zip(letter_var.results)|list }}"
-
-
   - name: create files
     template:
       src: template-file.j2
       dest: "{{ item.0.stdout }}_file.txt"
     loop: "{{ word_var.results|zip(letter_var.results)|list }}"
-
-
-# - name: with_together -> loop
-#   ansible.builtin.debug:
-#     msg: "{{ item.0 }} - {{ item.1 }}"
-#   loop: "{{ list_one|zip(list_two)|list }}"
