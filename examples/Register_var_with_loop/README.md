@@ -1,7 +1,9 @@
 # Example using a template with data from different sources.
 
 This example creates 3 files from a j2 template file that uses variables
-from two different sources.  
+from two different sources.  The playbook, `make_file.yml`, demonstrates how
+to `register` shell output within a `loop`.  The playbook also demonstrates the use
+of the `zip()` function in a loop.
 
 ```
 redcricket@Reds-MacBook-Pro Register_var_with_loop % ls -l
