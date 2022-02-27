@@ -1,0 +1,111 @@
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat datafile.txt[1m [0m[0m [?2004l
+1 one a
+2 two b
+3 three c
+4 our d
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat m template-file.j2[1m [0m[0m [?2004l
+Z1 = {{ item.0.stdout }}
+Z2 = {{ item.1.stdout }}
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat make_file.yml[1m [0m[0m [?2004l
+---
+- name: Make files
+  hosts: localhost
+  gather_facts: False
+  vars:
+    start: 1
+    end: 4
+
+  tasks:
+  - name: Set word
+    shell: |
+      grep {{ item }} datafile.txt | cut -d ' ' -f2
+    register: word_var
+    loop: "{{ range(start, end) | list }}"
+
+  - name: Set letter
+    shell: |
+      grep {{ item }} datafile.txt | cut -d ' ' -f3
+    register: letter_var
+    loop: "{{ range(start, end) | list }}"
+
+  - name: with_together -> loop
+    ansible.builtin.debug:
+      msg: "{{ item.0.stdout }} - {{ item.1.stdout }}"
+    loop: "{{ word_var.results|zip(letter_var.results)|list }}"
+
+
+  - name: create files
+    template:
+      src: template-file.j2
+      dest: "{{ item.0.stdout }}_file.txt"
+    loop: "{{ word_var.results|zip(letter_var.results)|list }}"
+
+
+# - name: with_together -> loop
+#   ansible.builtin.debug:
+#     msg: "{{ item.0 }} - {{ item.1 }}"
+#   loop: "{{ list_one|zip(list_two)|list }}"
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hlls -la[?2004l
+total 40
+drwxr-xr-x  7 russellcecala  staff   224 Feb 26 19:34 .
+drwxr-xr-x  4 russellcecala  staff   128 Feb 26 19:28 ..
+-rw-r--r--  1 russellcecala  staff   101 Feb 26 19:33 README.md
+-rw-r--r--  1 russellcecala  staff    34 Feb 25 21:46 datafile.txt
+-rw-r--r--  1 russellcecala  staff   912 Feb 26 19:21 make_file.yml
+-rw-r--r--  1 russellcecala  staff  2467 Feb 26 19:35 scriptfile
+-rw-r--r--  1 russellcecala  staff    50 Feb 26 19:21 template-file.j2
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004h[7mansible-playbook -i,localhost make_file.yml --connection=local[27m[62D[27ma[27mn[27ms[27mi[27mb[27ml[27me[27m-[27mp[27ml[27ma[27my[27mb[27mo[27mo[27mk[27m [27m-[27mi[27m,[27ml[27mo[27mc[27ma[27ml[27mh[27mo[27ms[27mt[27m [27mm[27ma[27mk[27me[27m_[27mf[27mi[27ml[27me[27m.[27my[27mm[27ml[27m [27m-[27m-[27mc[27mo[27mn[27mn[27me[27mc[27mt[27mi[27mo[27mn[27m=[27ml[27mo[27mc[27ma[27ml[?2004l
+
+PLAY [Make files] *****************************************************************************************************************************************************************************************
+
+TASK [Set word] *******************************************************************************************************************************************************************************************
+[0;33mchanged: [localhost] => (item=1)[0m
+[0;33mchanged: [localhost] => (item=2)[0m
+[0;33mchanged: [localhost] => (item=3)[0m
+[1;35m[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python, but future installation of another Python interpreter could change the meaning of that path.[0m
+[1;35mSee https://docs.ansible.com/ansible/2.10/reference_appendices/interpreter_discovery.html for more information.[0m
+
+TASK [Set letter] *****************************************************************************************************************************************************************************************
+[0;33mchanged: [localhost] => (item=1)[0m
+[0;33mchanged: [localhost] => (item=2)[0m
+[0;33mchanged: [localhost] => (item=3)[0m
+
+TASK [with_together -> loop] ******************************************************************************************************************************************************************************
+[0;32mok: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.020442', 'stdout': 'one', 'cmd': "grep 1 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.013940', 'stderr': '', 'delta': '0:00:00.006502', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 1 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['one'], 'stderr_lines': [], 'ansible_facts': {'discovered_interpreter_python': '/usr/bin/python'}, 'failed': False, 'item': 1, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:31.718821', 'stdout': 'a', 'cmd': "grep 1 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:31.711282', 'stderr': '', 'delta': '0:00:00.007539', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 1 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['a'], 'stderr_lines': [], 'failed': False, 'item': 1, 'ansible_loop_var': 'item'}]) => {[0m
+[0;32m    "msg": "one - a"[0m
+[0;32m}[0m
+[0;32mok: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.241644', 'stdout': 'two', 'cmd': "grep 2 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.234500', 'stderr': '', 'delta': '0:00:00.007144', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 2 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['two'], 'stderr_lines': [], 'failed': False, 'item': 2, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:31.941320', 'stdout': 'b', 'cmd': "grep 2 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:31.934167', 'stderr': '', 'delta': '0:00:00.007153', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 2 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['b'], 'stderr_lines': [], 'failed': False, 'item': 2, 'ansible_loop_var': 'item'}]) => {[0m
+[0;32m    "msg": "two - b"[0m
+[0;32m}[0m
+[0;32mok: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.465782', 'stdout': 'three', 'cmd': "grep 3 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.458585', 'stderr': '', 'delta': '0:00:00.007197', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 3 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['three'], 'stderr_lines': [], 'failed': False, 'item': 3, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:32.170841', 'stdout': 'c', 'cmd': "grep 3 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:32.164240', 'stderr': '', 'delta': '0:00:00.006601', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 3 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['c'], 'stderr_lines': [], 'failed': False, 'item': 3, 'ansible_loop_var': 'item'}]) => {[0m
+[0;32m    "msg": "three - c"[0m
+[0;32m}[0m
+
+TASK [create files] ***************************************************************************************************************************************************************************************
+[0;33mchanged: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.020442', 'stdout': 'one', 'cmd': "grep 1 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.013940', 'stderr': '', 'delta': '0:00:00.006502', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 1 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['one'], 'stderr_lines': [], 'ansible_facts': {'discovered_interpreter_python': '/usr/bin/python'}, 'failed': False, 'item': 1, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:31.718821', 'stdout': 'a', 'cmd': "grep 1 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:31.711282', 'stderr': '', 'delta': '0:00:00.007539', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 1 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['a'], 'stderr_lines': [], 'failed': False, 'item': 1, 'ansible_loop_var': 'item'}])[0m
+[0;33mchanged: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.241644', 'stdout': 'two', 'cmd': "grep 2 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.234500', 'stderr': '', 'delta': '0:00:00.007144', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 2 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['two'], 'stderr_lines': [], 'failed': False, 'item': 2, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:31.941320', 'stdout': 'b', 'cmd': "grep 2 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:31.934167', 'stderr': '', 'delta': '0:00:00.007153', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 2 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['b'], 'stderr_lines': [], 'failed': False, 'item': 2, 'ansible_loop_var': 'item'}])[0m
+[0;33mchanged: [localhost] => (item=[{'changed': True, 'end': '2022-02-26 19:35:31.465782', 'stdout': 'three', 'cmd': "grep 3 datafile.txt | cut -d ' ' -f2\n", 'rc': 0, 'start': '2022-02-26 19:35:31.458585', 'stderr': '', 'delta': '0:00:00.007197', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 3 datafile.txt | cut -d ' ' -f2\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['three'], 'stderr_lines': [], 'failed': False, 'item': 3, 'ansible_loop_var': 'item'}, {'changed': True, 'end': '2022-02-26 19:35:32.170841', 'stdout': 'c', 'cmd': "grep 3 datafile.txt | cut -d ' ' -f3\n", 'rc': 0, 'start': '2022-02-26 19:35:32.164240', 'stderr': '', 'delta': '0:00:00.006601', 'invocation': {'module_args': {'creates': None, 'executable': None, '_uses_shell': True, 'strip_empty_ends': True, '_raw_params': "grep 3 datafile.txt | cut -d ' ' -f3\n", 'removes': None, 'argv': None, 'warn': True, 'chdir': None, 'stdin_add_newline': True, 'stdin': None}}, 'stdout_lines': ['c'], 'stderr_lines': [], 'failed': False, 'item': 3, 'ansible_loop_var': 'item'}])[0m
+
+PLAY RECAP ************************************************************************************************************************************************************************************************
+[0;33mlocalhost[0m                  : [0;32mok=4   [0m [0;33mchanged=3   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hlls -l[?2004l
+total 88
+-rw-r--r--  1 russellcecala  staff    101 Feb 26 19:33 README.md
+-rw-r--r--  1 russellcecala  staff     34 Feb 25 21:46 datafile.txt
+-rw-r--r--  1 russellcecala  staff    912 Feb 26 19:21 make_file.yml
+-rw-r--r--  1 russellcecala  staff     16 Feb 26 19:35 one_file.txt
+-rw-r--r--  1 russellcecala  staff  13633 Feb 26 19:35 scriptfile
+-rw-r--r--  1 russellcecala  staff     50 Feb 26 19:21 template-file.j2
+-rw-r--r--  1 russellcecala  staff     18 Feb 26 19:35 three_file.txt
+-rw-r--r--  1 russellcecala  staff     16 Feb 26 19:35 two_file.txt
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat one_file.txt[1m [0m[0m [?2004l
+Z1 = one
+Z2 = a
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat two_file.txt[1m [0m[0m [?2004l
+Z1 = two
+Z2 = b
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004hccat three_file.txt[1m [0m[0m [?2004l
+Z1 = three
+Z2 = c
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                           [0m[27m[24m[Jrussellcecala@Russells-MacBook-Pro Register_var_with_loop % [K[?2004h[?2004l
